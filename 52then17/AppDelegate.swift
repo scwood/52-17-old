@@ -15,8 +15,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let workMinutes = 52
     let breakMinutes = 17
     
-    var seconds = 0
     var minutes = 0
+    var seconds = 0
     var secondsString = "00"
     var mode = "none"
     var paused = false
@@ -38,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         paused = false
         if mode == "work" {
             minutes = workMinutes
-        } else {
+        } else if mode == "break" {
             minutes = breakMinutes
         }
         seconds = 0
@@ -51,10 +51,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func update() -> Void {
         if seconds == 0 && minutes == 0 {
-            if mode == "break" {
-                startTimer("work")
-            } else {
+            if mode == "work" {
                 startTimer("break")
+            } else if mode == "break" {
+                startTimer("work")
             }
         } else {
             if seconds == 0 {
@@ -89,7 +89,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         notification.title = "52then17"
         if mode == "work" {
             notification.informativeText = "Work session started."
-        } else {
+        } else if mode == "break" {
             notification.informativeText = "Break started."
         }
         notification.soundName = NSUserNotificationDefaultSoundName
