@@ -690,13 +690,14 @@
                         <action selector="breakClicked:" target="Voe-Tx-rLC" id="91z-UM-F8i"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Pause/Resume" id="ZTd-Yz-P1C">
+                <menuItem isSeparatorItem="YES" id="xAN-vC-pQQ"/>
+                <menuItem title="Pause (currently broken)" id="ZTd-Yz-P1C">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="pauseClicked:" target="Voe-Tx-rLC" id="SXB-z6-Van"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Stop" id="YaI-fC-xLl">
+                <menuItem title="Stop Session" id="YaI-fC-xLl">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="stopClicked:" target="Voe-Tx-rLC" id="g9W-4n-uDl"/>

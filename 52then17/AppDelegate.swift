@@ -7,122 +7,172 @@
 //
 
 import Cocoa
-import Darwin
+import Foundation
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-    
-    let workMinutes = 52
-    let breakMinutes = 17
-    
-    var minutes = 0
-    var seconds = 0
-    var secondsString = "00"
-    var mode = "none"
-    var paused = false
-    var timer = NSTimer()
-    
-    @IBOutlet weak var window: NSWindow!
-    @IBOutlet weak var statusMenu: NSMenu!
-    @IBOutlet weak var timerLabel: NSMenuItem!
-    
-    let statusItem = NSStatusBar.systemStatusBar().statusItemWithLength(-1)
-    
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
-        statusItem.title = "GTD"
-        statusItem.menu = statusMenu
+
+  // Constants
+  let notifications = NSUserNotificationCenter.defaultUserNotificationCenter()
+  let statusItem = NSStatusBar.systemStatusBar().statusItemWithLength(-1)
+  let workMinutes = 52.0
+  let breakMinutes = 17.0
+
+  // Variables
+  var mode = "none"
+  var paused = false
+  var remainingMinutes = Int()
+  var remainingSeconds = Int()
+  var secondsString = String()
+  var alarm = NSTimer()
+  var timer = NSTimer()
+  var currentTime = NSDate()
+  var endingTime = NSDate()
+  var timeDifference = Int()
+
+  // Menu and window outlets
+  @IBOutlet weak var window: NSWindow!
+  @IBOutlet weak var statusMenu: NSMenu!
+  @IBOutlet weak var timerLabel: NSMenuItem!
+  
+  // Run at application launch
+  func applicationDidFinishLaunching(aNotification: NSNotification) {
+    statusItem.title = "GTD"
+    statusItem.menu = statusMenu
+  }
+
+  // Helper functions ---------------------------------------------------------
+
+  func startSession(modeTemp: String) -> Void {
+    mode = modeTemp
+    paused = false
+    currentTime = NSDate()
+    if mode == "work" {
+      remainingMinutes = Int(workMinutes)
+      endingTime = currentTime.dateByAddingTimeInterval(60 * workMinutes)
+      startAlarm(workMinutes)
+    } else if mode == "break" {
+      remainingMinutes = Int(breakMinutes)
+      endingTime = currentTime.dateByAddingTimeInterval(60 * breakMinutes)
+      startAlarm(breakMinutes)
     }
-    
-    func startTimer(modeTemp: String) -> Void {
-        mode = modeTemp
-        paused = false
-        if mode == "work" {
-            minutes = workMinutes
-        } else if mode == "break" {
-            minutes = breakMinutes
-        }
-        seconds = 0
-        secondsString = "00"
-        updateLabel()
-        timer.invalidate()
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector: Selector("update"), userInfo: nil, repeats:true)
-        showNotification()
+    showNotification()
+    startTimer()
+  }
+  
+  func endSession() -> Void {
+    if mode == "work" {
+      mode == "break"
+      startSession("break")
+    } else {
+      mode == "work"
+      startSession("work")
     }
-    
-    func update() -> Void {
-        if seconds == 0 && minutes == 0 {
-            if mode == "work" {
-                startTimer("break")
-            } else if mode == "break" {
-                startTimer("work")
-            }
-        } else {
-            if seconds == 0 {
-                seconds = 59;
-                secondsString = String(seconds)
-                minutes--
-            } else if seconds <= 10 {
-                seconds--
-                secondsString = "0" + String(seconds)
-            } else {
-                seconds--
-                secondsString = String(seconds)
-            }
-            updateLabel()
-        }
+  }
+
+  func startAlarm(minutesConstant: Double) -> Void {
+    alarm.invalidate()
+    alarm = NSTimer.scheduledTimerWithTimeInterval(
+      60 * minutesConstant,
+      target:self,
+      selector: Selector("endSession"),
+      userInfo: nil,
+      repeats:false)
+  }
+
+  func startTimer() -> Void {
+    timer.invalidate()
+    timer = NSTimer(
+      timeInterval:1,
+      target:self,
+      selector: Selector("updateTimerLabel"),
+      userInfo: nil,
+      repeats:true)
+    NSRunLoop.currentRunLoop().addTimer(timer, forMode:NSRunLoopCommonModes)
+  }
+
+  func updateTimerLabel() -> Void {
+    currentTime = NSDate()
+    timeDifference = Int(endingTime.timeIntervalSinceDate(currentTime))
+    remainingMinutes = timeDifference / 60
+    remainingSeconds = timeDifference % 60
+    if remainingSeconds == 0 {
+      remainingSeconds = 59;
+      remainingMinutes--
+    } else {
+      remainingSeconds--
     }
-    
-    func updateLabel() -> Void {
-        if mode == "work" && !paused {
-            timerLabel.title = "Working: " + String(minutes) + ":" + secondsString + " Remaining"
-        } else if mode == "break" && !paused {
-            timerLabel.title = "Break: " + String(minutes) + ":" + secondsString + " Remaining"
-        } else if mode == "work" && paused {
-            timerLabel.title = "Working (paused): " + String(minutes) + ":" + secondsString + " Remaining"
-        } else if mode == "break" && paused {
-            timerLabel.title = "Break (paused): " + String(minutes) + ":" + secondsString + " Remaining"
-        }
+    secondsString = String(format: "%02d", remainingSeconds)
+    if mode == "work" && !paused {
+      timerLabel.title =
+        "Work: \(remainingMinutes):\(secondsString) Remaining"
+    } else if mode == "break" && !paused {
+      timerLabel.title =
+        "Break: \(remainingMinutes):\(secondsString) Remaining"
+    } else if mode == "work" && paused {
+      timerLabel.title =
+        "Work (paused): \(remainingMinutes):\(secondsString) Remaining"
+    } else if mode == "break" && paused {
+      timerLabel.title =
+        "Break (paused): \(remainingMinutes):\(secondsString) Remaining"
     }
-    
-    func showNotification() -> Void {
-        var notification = NSUserNotification()
-        notification.title = "52then17"
-        if mode == "work" {
-            notification.informativeText = "Work session started."
-        } else if mode == "break" {
-            notification.informativeText = "Break started."
-        }
-        notification.soundName = NSUserNotificationDefaultSoundName
-        NSUserNotificationCenter.defaultUserNotificationCenter().deliverNotification(notification)
+  }
+  
+  func showNotification() -> Void {
+    var alarmNotification = NSUserNotification()
+    alarmNotification.title = "52then17"
+    if mode == "work" {
+      alarmNotification.informativeText = "Work session started."
+    } else if mode == "break" {
+      alarmNotification.informativeText = "Break started."
     }
-    
-    @IBAction func workClicked(sender: NSMenuItem) {
-        startTimer("work")
+    alarmNotification.soundName = NSUserNotificationDefaultSoundName
+    notifications.deliverNotification(alarmNotification)
+  }
+  
+  // Work in progress
+  func updateIcon() -> Void {
+    if mode == "none" {
+    } else if mode == "work" && !paused {
+    } else if mode == "work" && paused {
+    } else if mode == "break" && !paused {
+    } else if mode == "break" && paused {
     }
-    
-    @IBAction func breakClicked(sender: NSMenuItem) {
-        startTimer("break")
+  }
+
+  // Menu buttons -------------------------------------------------------------
+
+  @IBAction func workClicked(sender: NSMenuItem) {
+    startSession("work")
+  }
+
+  @IBAction func breakClicked(sender: NSMenuItem) {
+    startSession("break")
+  }
+
+  @IBAction func pauseClicked(sender: NSMenuItem) {
+    if !paused && mode != "none" {
+      timer.invalidate()
+      paused = true
+      updateTimerLabel()
+    } else if paused {
+      paused = false
+      updateTimerLabel()
+      startTimer()
     }
-    
-    @IBAction func pauseClicked(sender: NSMenuItem) {
-        if !paused && mode != "none" {
-            timer.invalidate()
-            paused = true
-            updateLabel()
-        } else if paused {
-            paused = false
-            updateLabel()
-            timer = NSTimer.scheduledTimerWithTimeInterval(1, target:self, selector: Selector("update"), userInfo: nil, repeats:true)
-        }
-    }
-    @IBAction func stopClicked(sender: NSMenuItem) {
-        timer.invalidate()
-        mode = "none"
-        paused = false
-        timerLabel.title = "No Timer Started"
-    }
-    
-    @IBAction func quitClicked(sender: NSMenuItem) {
-        exit(0)
-    }
+  }
+
+  @IBAction func stopClicked(sender: NSMenuItem) {
+    alarm.invalidate()
+    timer.invalidate()
+    mode = "none"
+    paused = false
+    timerLabel.title = "No Timer Started"
+  }
+
+  @IBAction func quitClicked(sender: NSMenuItem) {
+    alarm.invalidate()
+    timer.invalidate()
+    exit(0)
+  }
 }
