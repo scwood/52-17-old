@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6254"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6751"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -15,6 +15,8 @@
             <connections>
                 <outlet property="StatusMenu" destination="rSU-ig-IHa" id="sg7-zN-ChZ"/>
                 <outlet property="asdf" destination="rSU-ig-IHa" id="07l-2i-J1j"/>
+                <outlet property="changeIntervalMenu" destination="rSU-ig-IHa" id="4Lk-ET-YJl"/>
+                <outlet property="pauseLabel" destination="ZTd-Yz-P1C" id="r7b-3a-Qfy"/>
                 <outlet property="statusMenu" destination="rSU-ig-IHa" id="6Ke-Ws-BXv"/>
                 <outlet property="timerLabel" destination="K1y-u7-UEe" id="st0-r6-RFf"/>
             </connections>
@@ -691,13 +693,13 @@
                     </connections>
                 </menuItem>
                 <menuItem isSeparatorItem="YES" id="xAN-vC-pQQ"/>
-                <menuItem title="Pause (currently broken)" id="ZTd-Yz-P1C">
+                <menuItem title="Pause Timer" id="ZTd-Yz-P1C">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="pauseClicked:" target="Voe-Tx-rLC" id="SXB-z6-Van"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Stop Session" id="YaI-fC-xLl">
+                <menuItem title="Clear Timer" id="YaI-fC-xLl">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="stopClicked:" target="Voe-Tx-rLC" id="g9W-4n-uDl"/>
@@ -710,7 +712,7 @@
                     </connections>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="-1132.5" y="-1195.5"/>
+            <point key="canvasLocation" x="-1385.5" y="-1198.5"/>
         </menu>
     </objects>
 </document>

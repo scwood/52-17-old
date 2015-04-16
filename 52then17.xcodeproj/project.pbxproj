@@ -323,7 +323,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = 52then17/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = 52then17;
 			};
 			name = Debug;
 		};
@@ -334,7 +334,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = 52then17/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = 52then17;
 			};
 			name = Release;
 		};
@@ -353,7 +353,7 @@
 				);
 				INFOPLIST_FILE = 52then17Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = 52then17Tests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/52then17.app/Contents/MacOS/52then17";
 			};
 			name = Debug;
@@ -369,7 +369,7 @@
 				);
 				INFOPLIST_FILE = 52then17Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = 52then17Tests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/52then17.app/Contents/MacOS/52then17";
 			};
 			name = Release;
@@ -393,6 +393,7 @@
 				09D7E7F01A608377006A4F0F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		09D7E7F11A608377006A4F0F /* Build configuration list for PBXNativeTarget "52then17Tests" */ = {
 			isa = XCConfigurationList;
@@ -401,6 +402,7 @@
 				09D7E7F31A608377006A4F0F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
